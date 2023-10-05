@@ -1,0 +1,54 @@
+import React, { useState, useEffect } from 'react';
+import Layout from './Layout';
+import { getProducts } from './apiCore';
+import Card from './Card';
+import Search from './Search';
+import 'fontsource-roboto';
+import Copyright from './Copyright';
+
+const Home = () => {
+  const [productsByArrival, setProductsByArrival] = useState([]);
+  const [error, setError] = useState([]);
+
+  const loadProductsByArrival = () => {
+    getProducts('createdAt').then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setProductsByArrival(data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    loadProductsByArrival();
+  }, []);
+
+  return (
+    <Layout
+      title='Home page'
+      description='MERN E-commerce App'
+      className='container-fluid'
+    >
+      <Search />
+      <div className='row'>
+        <div className='col-md-1'></div>
+        <div className='col-md-10'>
+          <h2 className='mb-2'>New Product</h2>
+          <div className='row'>
+            {productsByArrival.map((product, i) => (
+              <div key={i} className='col-xl-4 col-lg-6 col-md-6 col-sm-12'>
+                <Card product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className='col-md-1'></div>
+      </div>
+
+      <Copyright />
+    </Layout>
+  );
+};
+
+export default Home;
